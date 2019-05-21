@@ -1,0 +1,48 @@
+#leaderboardWrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin-top: 5%;  
+}
+
+#leaderboardContainer {
+    border: 2px solid black;
+    margin: auto;
+    width: 80%;
+    height: 57%;
+    padding-top: 0%;
+    margin: 0 auto;
+    background-color: #e5decf;
+}
+
+#lb-header {
+    margin-top: -2.5%;
+    height: 10%;
+    background-color: #708090;
+}
+
+
+#lb-header-text {
+    height: 100%;
+    padding-top: 1%;
+}
+
+
+.lb-column{
+    float: left;
+    width: 25%;
+    font-size: 150%;
+
+  }
+  
+  /* Clear floats after the columns */
+.lb-row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
+
+
+

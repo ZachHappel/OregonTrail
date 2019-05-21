@@ -1,0 +1,33 @@
+/* Banner styling is imported from global.css */
+
+
+body {
+    background-color: #b2aca1;
+}
+
+
+#mainScreenContainer {
+    margin-left: 7%;
+    margin-top: 2%;
+    width: 65%;
+    height: 64%;
+    border: 3px solid black;
+
+}
+
+
+#mainScreenImage {
+    height: 100%;
+    width: 100%;
+   
+}
+
+
+
+
+#gameStatsWrapper {
+    position: fixed;
+    top: 30%;
+    right: 10%;
+    
+}
