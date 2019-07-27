@@ -59,3 +59,28 @@ app.get('/trail.html', function (req, res) {
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+
+
+exports.createNewGameAsync1 = function(req, res) {
+
+    /* Example Request Body: {'username': 'ZachHappel', 'groupMemberNames': ['BaileyV', 'ChrisB'], 'startMonth': 'July'} */
+    this.username = req.body.username;
+    this.playerNames = req.body.playerNames;
+    this.startMonth = req.body.startMonth;
+    this.wagonLeader = req.body.wagonLeader;
+    this.playerProfession = req.body.playerProfession;
+    //this.gameSessionID  gets automatically assigned within the function itself
+    try {
+        let newGameInstance = await createNewGame(this.username, this.playerNames, this.startMonth, this.playerProfession);  /*Send username, group members, and month to starts */
+        res.status(201).gameData(newGameInstance);
+    } catch (err) { res.status(res.statusCode)}};
+
+
+
+res.setHeader('Content-Type', 'application/json');
+res.setHeader('Access-Control-Allow-Origin', "*");
+res.send(JSON.parse(req.body));
+// res.send('New Game.   Owner: ' + this.username + " Members: " + this.groupMemberNames + " Start Month: " + this.startMonth + " Profession: "+String(this.playerProfession));
+// getSessionInfo();
+};

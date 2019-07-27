@@ -14,7 +14,7 @@ that is maintained within setupController. The modified version then replaces th
 var changePace = function (paceName) {
     /* Optional user-invoked function */
     /* New Pace object is created and assigned to the game instances currentPace variable */
-    getGameData();
+    grabGameData();
     /* Create new Pace object with the specified pace to the local copy of the game instance */
     localCopyOfGameInstance.currentPace = new pace.Pace(paceName);
     setGameData();
@@ -22,9 +22,61 @@ var changePace = function (paceName) {
 
 
 
+var getJSONGameData = function(){
+    localCopyOfGameInstance = setupController.get_selectedGameInstance();
+    this.gameInstance = localCopyOfGameInstance;
+    this.JSONGameData = {
+        'username' : '',
+        'playerNames': '',
+        'startMonth': '',
+        'startDate' : '',
+        'playerProfession' : '',
+        'playerMoney' : '',
+        'playerStatus' : '',
+        'gameSessionID' : '',
+        'groupHealth' : '',
+        'milesTraveled' : '',
+        'groupHealth' : '',
+        'currentPace' : '',
+        'playerMoney' : '',
+        'daysOnTrail' : '',
+        'playerMoney' : '',
+        'wagonLeader' : '',
+        'currentWeather' : '',
+        'currentTerrain' : '',
+
+    };
+
+    if (localCopyOfGameInstance == null) { grabGameData(); }
+
+    console.log('Before setting keys in JSONGameData array: ');
+    console.log(' -- Game Data: ' + this.gameInstance);
+    this.JSONGameData.username = this.gameInstance.username;
+    this.JSONGameData.playerNames = this.gameInstance.playerNames;
+    this.JSONGameData.startMonth = this.gameInstance.startMonth;
+    this.JSONGameData.startDate = this.gameInstance.startDate;
+    this.JSONGameData.playerProfession = this.gameInstance.playerProfession;
+    this.JSONGameData.gameSessionID = this.gameInstance.gameSessionID;
+    this.JSONGameData.milesTraveled = this.gameInstance.milesTraveled;
+    this.JSONGameData.groupHealth = this.gameInstance.groupHealth;
+    this.JSONGameData.currentPace = this.gameInstance.currentPace.paceName;
+    this.JSONGameData.playerMoney = this.gameInstance.playerMoney;
+    this.JSONGameData.wagonLeader = this.gameInstance.wagonLeader;
+    this.JSONGameData.currentWeather = this.gameInstance.currentWeather.weatherName;
+    this.JSONGameData.currentTerrain = this.gameInstance.currentTerrain.terrainName;
+
+
+
+
+
+    return this.JSONGameData;
+}
+
+
+
 var updateGame = function () {  /* Increment day */
 
-    getGameData();
+    grabGameData();
 
     weatherHealthChange = localCopyOfGameInstance.currentWeather.healthChange; /* -n < - > n    e.g (-)30 < - > (+)1  */
     weatherMileChange = localCopyOfGameInstance.currentWeather.mileChange;    /*  .n < - > n    e.g  0.1  < - >  1.0  */
@@ -88,7 +140,7 @@ var determineGroupHealthStatus = function (groupHealth) {
 
 
 var resetGame = function () {
-    getGameData();
+    grabGameData();
     console.log('UUh fuckign here');
     this.resetGameInstance =  new gameModel.gameData(localCopyOfGameInstance.username, localCopyOfGameInstance.playerNames, localCopyOfGameInstance.startMonth, localCopyOfGameInstance.playerProfession, localCopyOfGameInstance.gameSessionID);  /* Create game instance from username, group members, and start month */
     localCopyOfGameInstance = this.resetGameInstance;
@@ -99,7 +151,7 @@ var resetGame = function () {
 
 
 /* Obtain latest gameData of selected session/instance */
-var getGameData = function () {
+var grabGameData = function () {
     localCopyOfGameInstance = setupController.get_selectedGameInstance();
 };
 
@@ -110,9 +162,17 @@ var setGameData = function () {
     setupController.set_selectedGameInstance(localCopyOfGameInstance);
 };
 
+var getGameData = function () {
+    let gameDataArray = getJSONGameData();
+    return gameDataArray;
+};
+
 
 
 /* Exports */
+
+exports.getGameData = getGameData;
+
 
 exports.changePace = function(req, res) {
     this.paceName = req.body.paceName;
@@ -121,6 +181,17 @@ exports.changePace = function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.send('New, changed, pace: ' + localCopyOfGameInstance.currentPace.paceName);
 };
+
+/*
+exports.getGameData = function(req, res) {
+    grabGameData();
+    this.gameDataToSend = localCopyOfGameInstance;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(this.gameDataToSend);
+}
+*/
+
+
 
 
 

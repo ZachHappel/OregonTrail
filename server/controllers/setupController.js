@@ -1,6 +1,5 @@
 /* Create game and adjust the settings/preferences per game session */
 
-
 /* - Create new game using gameInstance() within gameData.js
         - gameInstance creates a new gameData object and returns it
         - gameSessionID is the current length of gameSessions
@@ -25,10 +24,11 @@ var selectedGameInstance;
 
 
 
-var createNewGame = function (username, playerNames, startMonth, playerProfession) {
-    var gameInstance = new gameModel.gameData(username, playerNames, startMonth, playerProfession, gameSessions.length);  /* Create game instance from username, group members, and start month *//* ID is assigned as well */
+var createNewGame = function (username, playerNames, wagonLeader, startMonth, startDate, playerProfession) {
+    var gameInstance = new gameModel.gameData(username, playerNames, wagonLeader, startMonth, startDate, playerProfession, gameSessions.length);  /* Create game instance from username, group members, and start month *//* ID is assigned as well */
     selectedGameInstance = gameInstance;
     gameSessions.push(selectedGameInstance);  /* Add to gameSessions list */
+    //getSessionInfo();
 };
 
 
@@ -65,6 +65,7 @@ var getSessionInfo = function() {
 
     console.log("-----       Game Stats      -----");
     console.log("Start Month: " + selectedGameInstance.startMonth);
+    console.log("Start Date: " + selectedGameInstance.startDate);
     console.log("Days on Trail: " + selectedGameInstance.daysOnTrail);
     console.log("Miles Traveled: " + selectedGameInstance.milesTraveled);
     console.log("($) Money: " + selectedGameInstance.playerMoney);
@@ -120,24 +121,89 @@ var getGameScreen = function () {
 };
 
 
-
-/* Exports */
-
-exports.createNewGame = function(req, res) {
-
-    /* Example Request Body: {'username': 'ZachHappel', 'groupMemberNames': ['BaileyV', 'ChrisB'], 'startMonth': 'July'} */
+var acceptRequest = function (req, res) {
     this.username = req.body.username;
-    this.groupMemberNames = req.body.groupMemberNames;
+    this.playerNames = req.body.playerNames;
     this.startMonth = req.body.startMonth;
+    this.wagonLeader = req.body.wagonLeader;
     this.playerProfession = req.body.playerProfession;
 
-    createNewGame(this.username, this.groupMemberNames, this.startMonth, this.playerProfession);  /*Send username, group members, and month to starts */
+    console.log(this.username)
+    console.log(this.playerNames)
+    console.log(this.startMonth)
+    console.log(this.wagonLeader)
+    console.log(this.playerProfession)
 
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', "*");
-    res.send('New Game.   Owner: ' + this.username + " Members: " + this.groupMemberNames + " Start Month: " + this.startMonth + " Profession: "+String(this.playerProfession));
-    getSessionInfo();
+    res.send('received');
+
+}
+
+
+
+
+
+async function instantiateNewGame(req, res) {
+    //username, playerNames, wagonLeader, startMonth, playerProfession
+    /* Example Request Body: {'username': 'ZachHappel', 'groupMemberNames': ['BaileyV', 'ChrisB'], 'startMonth': 'July'} */
+    this.username = req.body.username;
+    this.playerNames = req.body.playerNames;
+    this.startMonth = req.body.startMonth;
+    this.wagonLeader = req.body.wagonLeader;
+    this.playerProfession = req.body.playerProfession;
+    //this.gameSessionID  gets automatically assigned within the function itself
+    try {
+        let newGameInstance = await createNewGame(this.username, this.playerNames, this.wagonLeader, this.startMonth, this.playerProfession);  /*Send username, group members, and month to starts */
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', "*");
+        res.statusCode = '200';
+        res.send(JSON.stringify(req.body));
+        console.log(JSON.stringify(req.body));
+    } catch (err) {
+        next(err);
+        //res.status(res.statusCode)
+    }};
+/*
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', "*");
+    res.send(JSON.parse(req.body));
+// res.send('New Game.   Owner: ' + this.username + " Members: " + this.groupMemberNames + " Start Month: " + this.startMonth + " Profession: "+String(this.playerProfession));
+// getSessionInfo();
+
+
+
+
+
+/* Exports */
+
+
+
+
+exports.instantiateNewGame = instantiateNewGame;
+
+
+exports.createNewGame1 = function(req, res) {
+
+    /* Example Request Body: {'username': 'ZachHappel', 'groupMemberNames': ['BaileyV', 'ChrisB'], 'startMonth': 'July'} */
+    this.username = req.body.username;
+    this.playerNames = req.body.playerNames;
+    this.startMonth = req.body.startMonth;
+    this.wagonLeader = req.body.wagonLeader;
+    this.playerProfession = req.body.playerProfession;
+    //this.gameSessionID  gets automatically assigned within the function itself
+
+    createNewGame(this.username, this.playerNames, this.startMonth, this.playerProfession);  /*Send username, group members, and month to starts */
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', "*");
+    res.send(JSON.parse(req.body));
+   // res.send('New Game.   Owner: ' + this.username + " Members: " + this.groupMemberNames + " Start Month: " + this.startMonth + " Profession: "+String(this.playerProfession));
+   // getSessionInfo();
 };
+
+
+
 
 
 
@@ -207,7 +273,9 @@ exports.get_selectedGameInstance = get_selectedGameInstance;
 
 
 exports.selectedGameInstance = this.selectedGameInstance;
+exports.gameSessions = this.gameSessions;
 
 
-
+/* New */
+module.exports.createNewGame  = createNewGame;
 

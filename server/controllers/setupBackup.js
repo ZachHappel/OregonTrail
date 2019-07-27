@@ -46,7 +46,6 @@ var updateStartMonth = function (startMonth) {
 
 
 
-
 var getGameScreen = function () {
 
 };
@@ -101,6 +100,7 @@ exports.createNewGame = function(req, res) {
     this.username = req.body.username;
     this.groupMemberNames = req.body.groupMemberNames;
     this.startMonth = req.body.startMonth;
+    this.me
     /*
     this.gameSessionID = req.body.gameSessionID;
     */
@@ -122,11 +122,6 @@ exports.updateProfession = function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.send('Profession Updated; New Profession...' + String(this.profession));
 };
-
-
-
-
-
 
 
 

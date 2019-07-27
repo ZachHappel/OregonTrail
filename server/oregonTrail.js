@@ -16,6 +16,7 @@ const gameController = require('./controllers/gameController.js');
 var setupController = require('./controllers/setupController.js');
 var topTenController = require('./controllers/topTenController.js');
 
+var req_counter = 0;
 /* --------------------- */
 
 
@@ -46,6 +47,9 @@ app.get('/trail.html', function (req, res) {
     res.sendFile('trail.html', {root: './client/views' })
 })
 
+app.get('/examples.html', function (req, res) {
+    res.sendFile('trail.html', {root: './client/views' })
+})
 
 
 /* API calls */
@@ -71,6 +75,27 @@ app.route('/api/setup/game_data')
     .get(setupController.getGameData);
 
 
+
+app.post('/api/setup/instantiate_game', function (req, res) {
+    req_counter++;
+    console.log("Request #: "+ req_counter);
+    console.log("body: ");
+    console.log(req.body);
+    setupController.createNewGame(req.body.username, req.body.playerNames, req.body.wagonLeader, req.body.startMonth, req.body.startDate, req.body.playerProfession);
+    res.send(req.body);
+});
+
+
+app.get('/api/game/game_data', function (req, res) {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!GET Request: game_data");
+    let gameDataArray = gameController.getGameData();
+    res.send(gameDataArray);
+});
+
+
+
+
+
 /* Game Controller */
 
 app.route('/api/game/change_pace')
@@ -81,6 +106,7 @@ app.route('/api/game/update')
 
 app.route('/api/game/reset')
     .post(gameController.resetGame);
+
 
 
 /* Top Ten Controller */
